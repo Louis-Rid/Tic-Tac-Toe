@@ -1,11 +1,3 @@
-/**
- * This C++ program implements a simple Tic-Tac-Toe game. 
- * It includes functions for initializing and displaying the game board, 
- * validating user input, updating the board based on player actions, and 
- * checking for win conditions. The main function controls the game flow, 
- * switching turns and determining the winner.
- */
-
 #include <iostream>
 #include <limits>
 #include <cmath>
@@ -13,10 +5,10 @@ using namespace std;
 
 /**
  * Initializes a blank Tic-Tac-Toe board for the start of the game.
- *
+ * 
  * @return A 2D array representing the game board with empty spaces.
  */
-string** initializeBoard()
+string** initializeBoard() 
 {
     string** boardValues = new string*[3];
     for (int i = 0; i < 3; i++) {
@@ -30,7 +22,7 @@ string** initializeBoard()
 
 /**
  * Displays the current state of the Tic-Tac-Toe board.
- *
+ * 
  * @param values A 2D array representing the game board.
  */
 void displayBoard(string** values)
@@ -51,13 +43,13 @@ void displayBoard(string** values)
 
 /**
  * Updates the Tic-Tac-Toe board based on the player's input and character.
- *
+ * 
  * @param values A 2D array representing the game board.
  * @param input The player's chosen position (1-9).
  * @param character The player's symbol ("X" or "O").
  * @return Updated game board.
  */
-string** updateBoard(string** values, int input, string character)
+string** updateBoard(string** values, int input, string character) 
 {
     switch (input) {
         case 1: values[0][0] = character; break;
@@ -76,7 +68,7 @@ string** updateBoard(string** values, int input, string character)
 
 /**
  * Checks if a win condition is met on the Tic-Tac-Toe board.
- *
+ * 
  * @param board A 2D array representing the game board.
  * @return True if a player has won, otherwise false.
  */
@@ -104,7 +96,7 @@ bool checkIfWon(string** board)
 
 /**
  * Validates the user's input to ensure it corresponds to an empty position on the board.
- *
+ * 
  * @param board A 2D array representing the game board.
  * @return A valid position input from the user.
  */
@@ -117,4 +109,66 @@ int validateInput(string** board)
         cout << "   Please enter a valid input that is a whole number (1-9):" << endl;
         cin >> validatedInput;
         cin.clear();
-        cin.ignore(numeric_limits
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        if (validatedInput >= 1 && validatedInput <= 9)
+        {
+            switch (validatedInput) {
+                case 1: curBoardLocation = board[0][0]; break;
+                case 2: curBoardLocation = board[0][1]; break;
+                case 3: curBoardLocation = board[0][2]; break;
+                case 4: curBoardLocation = board[1][0]; break;
+                case 5: curBoardLocation = board[1][1]; break;
+                case 6: curBoardLocation = board[1][2]; break;
+                case 7: curBoardLocation = board[2][0]; break;
+                case 8: curBoardLocation = board[2][1]; break;
+                case 9: curBoardLocation = board[2][2]; break;
+            }
+
+            if (curBoardLocation == " ") {
+                isValid = true;
+                return floor(validatedInput);
+            } else {
+                cout << "Input Error: ";
+            }
+        } else {
+            cout << "Input Error: ";
+        }
+
+    } while (!isValid);
+    
+    return 0;
+}
+
+/**
+ * The main function that controls the game flow from start to finish.
+ * 
+ * @return Exit status of the program.
+ */
+int main()
+{
+    cout << "Game started!" << endl;
+    string** board = initializeBoard();
+    displayBoard(board);
+    int turnCount = 0;
+    int curPlayersTurn = 2;
+    bool hasWon = false;
+
+    while (turnCount < 9 && !hasWon) {
+        curPlayersTurn = curPlayersTurn == 1 ? 2 : 1;
+        cout << "   It is player " << curPlayersTurn << " turn!" << endl;
+        
+        int position = validateInput(board);
+        
+        turnCount++;
+        updateBoard(board, position, curPlayersTurn == 1 ? "O" : "X");
+        
+        displayBoard(board);
+        hasWon = checkIfWon(board);
+    }
+
+    if (hasWon) cout << "Player " << curPlayersTurn << " has won!" << endl;
+    else cout << "No more spaces are available." << endl;
+
+    return 0;
+}
